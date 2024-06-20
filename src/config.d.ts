@@ -1,8 +1,8 @@
 export namespace defaults {
-    const timeout: number;
-    const postContentType: string;
+    let timeout: number;
+    let postContentType: string;
 }
 export namespace test {
-    const normalToken: string;
-    const javascriptToken: string;
+    let normalToken: string;
+    let javascriptToken: string;
 }

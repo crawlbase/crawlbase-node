@@ -76,7 +76,7 @@ class BaseAPI {
     };
     return new Promise((resolve, reject) => {
       const request = https.request(requestOptions, (response) =>
-        this.processResponse(response).then(resolve).catch(reject)
+        this.processResponse(response).then(resolve).catch(reject),
       );
       request.setTimeout(this.options.timeout, () => request.destroy('Request timeout'));
       request.on('error', reject);
