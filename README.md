@@ -123,7 +123,7 @@ api.get('https://www.nfl.com').then(response => {
 Same way you can pass javascript additional options.
 
 ```javascript
-api.get('https://www.freelancer.com', { pageWait: 5000 }).then(response => {
+api.get('https://www.freelancer.com', { page_wait: 5000 }).then(response => {
   if (response.statusCode === 200) {
     console.log(response.body);
   }
