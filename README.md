@@ -142,6 +142,8 @@ api.get('https://craiglist.com').then(response => {
 
 ## Scraper API usage
 
+> ⚠️ **Deprecated.** The standalone Scraper API has been closed to new sign-ups since October 1, 2024. Existing integrations continue to work and no shutdown is scheduled, but new code should use the Crawling API with the `scraper` parameter instead (same scrapers, simpler endpoint, more parameters). The class below stays available for backward compatibility. See the [scrapers documentation](https://crawlbase.com/docs/scrapers).
+
 Initialize the Scraper API and use it in the same way as the Crawling API (see above). Use it with your normal token.
 
 ```javascript
@@ -156,6 +158,8 @@ api.get('https://www.amazon.com/Halo-SleepSack-Swaddle-Triangle-Neutral/dp/B01LA
 
 ## Leads API usage
 
+> ⚠️ **Deprecated.** The Leads API has been closed to new sign-ups since October 1, 2024. Existing integrations continue to work and no shutdown is scheduled. There is no direct replacement; for similar workflows use the Crawling API with the [`email-extractor`](https://crawlbase.com/docs/scrapers/email-extractor) scraper (any URL → emails) or the [`google-serp`](https://crawlbase.com/docs/scrapers/google-serp) scraper for domain-scoped contact discovery. The class below stays available for backward compatibility.
+
 Initialize with your Leads API token and call the `getFromDomain` method.
 
 ```javascript
@@ -167,6 +171,8 @@ api.getFromDomain('somesite.com').then(response => {
 ```
 
 ## Screenshots API usage
+
+> ⚠️ **Deprecated.** The standalone Screenshots API has been closed to new sign-ups since November 1, 2024. Existing integrations continue to work and no shutdown is scheduled, but new code should use the Crawling API with the `screenshot=true` parameter — same JS-rendering pipeline, screenshot parameters on the standard endpoint. The class below stays available for backward compatibility. See the [Crawling API screenshots section](https://crawlbase.com/docs/crawling-api#screenshots).
 
 Initialize with your Screenshots API token and call the `get` method, then do whatever you need with the binary content. For example save it in a file.
 
@@ -184,6 +190,20 @@ api.get('https://www.amazon.com', { device: 'mobile' }).then(response => {
   fs.writeFileSync('amazon-mobile.jpg', response.body, { encoding: 'binary' });
 });
 ```
+
+## Smart AI Proxy usage
+
+The [Smart AI Proxy](https://crawlbase.com/docs/smart-proxy) is a standard rotating HTTP(S) proxy endpoint, so it needs no SDK: point any HTTP client at `smartproxy.crawlbase.com:8012` (HTTP) or `smartproxy.crawlbase.com:8013` (HTTPS) with your token as the proxy username and an empty password. Crawlbase handles proxy rotation, retries and anti-bot bypass on its side.
+
+```javascript
+const { HttpsProxyAgent } = require('https-proxy-agent');
+
+const agent = new HttpsProxyAgent('https://YOUR_TOKEN:@smartproxy.crawlbase.com:8013', { rejectUnauthorized: false });
+
+fetch('https://httpbin.org/ip', { agent }).then(res => res.text()).then(console.log);
+```
+
+Note: the proxy re-signs HTTPS traffic, so certificate verification must be disabled on the client (as in the example). See the [Smart AI Proxy documentation](https://crawlbase.com/docs/smart-proxy) for all options.
 
 If you have questions or need help using the library, please open an issue or [contact us](https://crawlbase.com/contact).
 
