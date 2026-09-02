@@ -172,7 +172,7 @@ api.getFromDomain('somesite.com').then(response => {
 
 ## Screenshots API usage
 
-> ⚠️ **Deprecated.** The standalone Screenshots API has been closed to new sign-ups since November 1, 2024. Existing integrations continue to work and no shutdown is scheduled, but new code should use the Crawling API with the `screenshot=true` parameter — same JS-rendering pipeline, screenshot parameters on the standard endpoint. The class below stays available for backward compatibility. See the [Crawling API screenshots section](https://crawlbase.com/docs/crawling-api#screenshots).
+> ⚠️ **Deprecated.** The standalone Screenshots API has been closed to new sign-ups since November 1, 2024. Existing integrations continue to work and no shutdown is scheduled, but new code should use the Crawling API with the `screenshot=true` parameter — same JS-rendering pipeline, screenshot parameters on the standard endpoint. The class below stays available for backward compatibility. See the [Crawling API documentation](https://crawlbase.com/docs/crawling-api).
 
 Initialize with your Screenshots API token and call the `get` method, then do whatever you need with the binary content. For example save it in a file.
 
@@ -196,14 +196,19 @@ api.get('https://www.amazon.com', { device: 'mobile' }).then(response => {
 The [Smart AI Proxy](https://crawlbase.com/docs/smart-proxy) is a standard rotating HTTP(S) proxy endpoint, so it needs no SDK: point any HTTP client at `smartproxy.crawlbase.com:8012` (HTTP) or `smartproxy.crawlbase.com:8013` (HTTPS) with your token as the proxy username and an empty password. Crawlbase handles proxy rotation, retries and anti-bot bypass on its side.
 
 ```javascript
+const https = require('https');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 
-const agent = new HttpsProxyAgent('https://YOUR_TOKEN:@smartproxy.crawlbase.com:8013', { rejectUnauthorized: false });
+const agent = new HttpsProxyAgent('https://YOUR_TOKEN:@smartproxy.crawlbase.com:8013');
 
-fetch('https://httpbin.org/ip', { agent }).then(res => res.text()).then(console.log);
+https.get('https://httpbin.org/ip', { agent, rejectUnauthorized: false }, res => {
+  let body = '';
+  res.on('data', chunk => (body += chunk));
+  res.on('end', () => console.log(body));
+});
 ```
 
-Note: the proxy re-signs HTTPS traffic, so certificate verification must be disabled on the client (as in the example). See the [Smart AI Proxy documentation](https://crawlbase.com/docs/smart-proxy) for all options.
+Note: the proxy re-signs HTTPS traffic, so certificate verification must be disabled on the client (as in the example). The example uses the core `https` module because Node's built-in `fetch` ignores the `agent` option and would bypass the proxy. See the [Smart AI Proxy documentation](https://crawlbase.com/docs/smart-proxy) for all options.
 
 If you have questions or need help using the library, please open an issue or [contact us](https://crawlbase.com/contact).
 
